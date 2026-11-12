@@ -1,0 +1,161 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#10172a">
+<title>Nexora AI</title>
+<style>
+*{box-sizing:border-box}
+body{
+ margin:0;
+ font-family:Arial,sans-serif;
+ background:#10172a;
+ color:white;
+ min-height:100vh;
+}
+header{
+ padding:24px 18px;
+ background:#17233d;
+ border-bottom:1px solid #34415c;
+}
+header h1{margin:0;color:#65d5ff}
+header p{margin:7px 0 0;color:#b8c6dc}
+main{max-width:650px;margin:auto;padding:20px}
+.card{
+ background:#1b2944;
+ padding:18px;
+ border-radius:18px;
+ margin-bottom:18px;
+}
+h2{margin-top:0}
+#chat{
+ height:320px;
+ overflow-y:auto;
+ background:#111d33;
+ padding:14px;
+ border-radius:14px;
+ margin-bottom:12px;
+}
+.msg{
+ padding:12px;
+ border-radius:12px;
+ margin:9px 0;
+ line-height:1.5;
+ white-space:pre-wrap;
+}
+.bot{background:#293b5d}
+.user{background:#075c83;text-align:right}
+input{
+ width:100%;
+ padding:15px;
+ border:1px solid #526582;
+ border-radius:12px;
+ background:#111d33;
+ color:white;
+ font-size:16px;
+}
+button{
+ border:0;
+ border-radius:12px;
+ padding:14px;
+ background:#168ed0;
+ color:white;
+ font-size:16px;
+ font-weight:bold;
+ cursor:pointer;
+}
+.send{width:100%;margin-top:10px}
+.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.actions button{background:#293d60}
+footer{text-align:center;color:#9eabc0;padding:20px}
+</style>
+</head>
+<body>
+<header>
+<h1>✦ NEXORA AI</h1>
+<p>Tu asistente personal inteligente</p>
+</header>
+
+<main>
+<section class="card">
+<h2>¡Hola! 👋</h2>
+<p>Soy Nexora AI. Estoy aquí para ayudarte a organizar tu día.</p>
+</section>
+
+<section class="card">
+<h2>💬 Conversa conmigo</h2>
+<div id="chat" aria-live="polite">
+<div class="msg bot">¡Hola! Soy Nexora AI. ¿En qué puedo ayudarte hoy?</div>
+</div>
+
+<form id="chatForm">
+<input id="message" placeholder="Escribe tu mensaje..." autocomplete="off">
+<button class="send" type="submit">Enviar mensaje ➤</button>
+</form>
+</section>
+
+<section class="card">
+<h2>⚡ Accesos rápidos</h2>
+<div class="actions">
+<button onclick="quick('Ayúdame a organizar mi día')">📅 Mi día</button>
+<button onclick="quick('Ayúdame con mis tareas')">✅ Mis tareas</button>
+<button onclick="quick('Quiero definir mis metas')">🎯 Mis metas</button>
+<button onclick="quick('Dame una frase motivadora')">✨ Motivación</button>
+</div>
+</section>
+</main>
+
+<footer>
+Nexora AI © 2026 · Proyecto de NexoraAI202623
+</footer>
+
+<script>
+const chat=document.getElementById("chat");
+const input=document.getElementById("message");
+
+function addMessage(text,type){
+ const div=document.createElement("div");
+ div.className="msg "+type;
+ div.textContent=text;
+ chat.appendChild(div);
+ chat.scrollTop=chat.scrollHeight;
+}
+
+function respond(text){
+ const t=text.toLowerCase();
+ if(t.includes("día")||t.includes("organizar")){
+ return "¡Vamos a organizar tu día! Primero identifica tu tarea más importante y después ordenamos las demás.";
+ }
+ if(t.includes("tarea")){
+ return "Escribe tus tareas y te ayudaré a ordenarlas por prioridad.";
+ }
+ if(t.includes("meta")){
+ return "¡Excelente! Cuéntame qué quieres conseguir y construiremos un plan paso a paso.";
+ }
+ if(t.includes("motiv")){
+ return "Cada pequeño paso te acerca a una gran meta. ¡Sigue adelante!";
+ }
+ if(t.includes("hola")){
+ return "¡Hola! Bienvenido a Nexora AI. ¿Qué hacemos hoy?";
+ }
+ return "Gracias por escribirme. Soy la primera versión de Nexora AI. Todavía estoy aprendiendo y pronto podremos conectar inteligencia artificial real.";
+}
+
+document.getElementById("chatForm").addEventListener("submit",function(e){
+ e.preventDefault();
+ const text=input.value.trim();
+ if(!text)return;
+ addMessage(text,"user");
+ input.value="";
+ setTimeout(()=>addMessage(respond(text),"bot"),300);
+});
+
+function quick(text){
+ input.value=text;
+ document.getElementById("chatForm").requestSubmit();
+}
+</script>
+</body>
+</html>
