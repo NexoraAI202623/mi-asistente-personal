@@ -5,7 +5,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#10172a">
-<title>Nexora AI</title>
+<title>NEXORA AI</title>
 <style>
 *{box-sizing:border-box}
 body{
@@ -16,60 +16,62 @@ body{
  min-height:100vh;
 }
 header{
- padding:24px 18px;
+ padding:22px 18px;
  background:#17233d;
  border-bottom:1px solid #34415c;
 }
-header h1{margin:0;color:#65d5ff}
-header p{margin:7px 0 0;color:#b8c6dc}
-main{max-width:650px;margin:auto;padding:20px}
+header h1{color:#55c9ff;margin:0;font-size:30px}
+header p{color:#bdc9dc;margin:10px 0 0}
+main{padding:18px;max-width:700px;margin:auto}
 .card{
- background:#1b2944;
- padding:18px;
- border-radius:18px;
- margin-bottom:18px;
+ background:#1c2a46;
+ padding:20px;
+ border-radius:24px;
+ margin-bottom:20px;
 }
 h2{margin-top:0}
 #chat{
- height:320px;
- overflow-y:auto;
- background:#111d33;
- padding:14px;
- border-radius:14px;
- margin-bottom:12px;
-}
-.msg{
- padding:12px;
- border-radius:12px;
- margin:9px 0;
- line-height:1.5;
- white-space:pre-wrap;
-}
-.bot{background:#293b5d}
-.user{background:#075c83;text-align:right}
-input{
- width:100%;
+ background:#101d35;
+ border-radius:18px;
  padding:15px;
- border:1px solid #526582;
- border-radius:12px;
- background:#111d33;
+ min-height:260px;
+ max-height:380px;
+ overflow-y:auto;
+}
+.message{
+ padding:13px;
+ border-radius:15px;
+ margin:10px 0;
+ line-height:1.5;
+}
+.bot{background:#293d60}
+.user{background:#087eb5;text-align:right}
+input,select{
+ width:100%;
+ padding:16px;
+ border-radius:14px;
+ border:1px solid #62718e;
+ background:#101d35;
  color:white;
  font-size:16px;
+ margin-top:12px;
 }
 button{
  border:0;
- border-radius:12px;
- padding:14px;
- background:#168ed0;
+ border-radius:14px;
+ padding:15px;
+ background:#159bd5;
  color:white;
  font-size:16px;
  font-weight:bold;
  cursor:pointer;
+ margin-top:10px;
 }
-.send{width:100%;margin-top:10px}
-.actions{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.actions button{background:#293d60}
-footer{text-align:center;color:#9eabc0;padding:20px}
+button:active{opacity:.8}
+.actions{display:flex;gap:8px;flex-wrap:wrap}
+.actions button{flex:1;min-width:125px}
+#status{color:#9edfff;font-size:14px}
+footer{text-align:center;color:#9aaac4;padding:20px}
 </style>
 </head>
 <body>
@@ -82,80 +84,149 @@ footer{text-align:center;color:#9eabc0;padding:20px}
 <section class="card">
 <h2>¡Hola! 👋</h2>
 <p>Soy Nexora AI. Estoy aquí para ayudarte a organizar tu día.</p>
+<p id="status">Estoy lista para escucharte.</p>
 </section>
 
 <section class="card">
 <h2>💬 Conversa conmigo</h2>
-<div id="chat" aria-live="polite">
-<div class="msg bot">¡Hola! Soy Nexora AI. ¿En qué puedo ayudarte hoy?</div>
+<div id="chat">
+<div class="message bot">
+¡Hola! Soy Nexora AI. ¿En qué puedo ayudarte hoy?
+</div>
 </div>
 
-<form id="chatForm">
-<input id="message" placeholder="Escribe tu mensaje..." autocomplete="off">
-<button class="send" type="submit">Enviar mensaje ➤</button>
-</form>
+<input id="mensaje" placeholder="Escribe tu mensaje...">
+
+<div class="actions">
+<button onclick="enviar()">Enviar ➤</button>
+<button onclick="escuchar()">🎤 Hablar</button>
+</div>
+
+<label for="voz">Elige una voz:</label>
+<select id="voz" onchange="guardarVoz()">
+<option value="female">Voz femenina</option>
+<option value="male">Voz masculina</option>
+</select>
+
+<button onclick="detenerVoz()" style="background:#465675;width:100%">
+🔇 Detener voz
+</button>
 </section>
 
 <section class="card">
-<h2>⚡ Accesos rápidos</h2>
+<h2>✨ Accesos rápidos</h2>
 <div class="actions">
-<button onclick="quick('Ayúdame a organizar mi día')">📅 Mi día</button>
-<button onclick="quick('Ayúdame con mis tareas')">✅ Mis tareas</button>
-<button onclick="quick('Quiero definir mis metas')">🎯 Mis metas</button>
-<button onclick="quick('Dame una frase motivadora')">✨ Motivación</button>
+<button onclick="respuesta('Ayúdame a organizar mi día')">Mi día</button>
+<button onclick="respuesta('Ayúdame con mis tareas')">Mis tareas</button>
+<button onclick="respuesta('Quiero trabajar en mis metas')">Mis metas</button>
+<button onclick="respuesta('Dame una frase motivadora')">Motivación</button>
 </div>
 </section>
 </main>
 
-<footer>
-Nexora AI © 2026 · Proyecto de NexoraAI202623
-</footer>
+<footer>NEXORA AI · Tu asistente personal</footer>
 
 <script>
 const chat=document.getElementById("chat");
-const input=document.getElementById("message");
+const mensaje=document.getElementById("mensaje");
+const estado=document.getElementById("status");
 
-function addMessage(text,type){
+function agregar(texto,tipo){
  const div=document.createElement("div");
- div.className="msg "+type;
- div.textContent=text;
+ div.className="message "+tipo;
+ div.textContent=texto;
  chat.appendChild(div);
  chat.scrollTop=chat.scrollHeight;
 }
 
-function respond(text){
- const t=text.toLowerCase();
- if(t.includes("día")||t.includes("organizar")){
- return "¡Vamos a organizar tu día! Primero identifica tu tarea más importante y después ordenamos las demás.";
- }
- if(t.includes("tarea")){
- return "Escribe tus tareas y te ayudaré a ordenarlas por prioridad.";
- }
- if(t.includes("meta")){
- return "¡Excelente! Cuéntame qué quieres conseguir y construiremos un plan paso a paso.";
- }
- if(t.includes("motiv")){
- return "Cada pequeño paso te acerca a una gran meta. ¡Sigue adelante!";
- }
- if(t.includes("hola")){
- return "¡Hola! Bienvenido a Nexora AI. ¿Qué hacemos hoy?";
- }
- return "Gracias por escribirme. Soy la primera versión de Nexora AI. Todavía estoy aprendiendo y pronto podremos conectar inteligencia artificial real.";
+function responder(texto){
+ const t=texto.toLowerCase();
+ if(t.includes("día")||t.includes("organizar"))
+ return "¡Claro! Podemos organizar tus actividades, horarios y prioridades.";
+ if(t.includes("tarea"))
+ return "Vamos paso a paso. Cuéntame qué tarea necesitas organizar.";
+ if(t.includes("meta"))
+ return "Tus metas se pueden dividir en pequeños pasos. ¿Cuál quieres trabajar primero?";
+ if(t.includes("motiv"))
+ return "¡Tú puedes avanzar poco a poco! Cada pequeño paso cuenta.";
+ return "Gracias por contarme. Por ahora soy una versión inicial y todavía estoy aprendiendo. Cuéntame un poco más para ayudarte.";
 }
 
-document.getElementById("chatForm").addEventListener("submit",function(e){
- e.preventDefault();
- const text=input.value.trim();
- if(!text)return;
- addMessage(text,"user");
- input.value="";
- setTimeout(()=>addMessage(respond(text),"bot"),300);
+function hablar(texto){
+ if(!("speechSynthesis" in window)){
+ estado.textContent="Tu navegador no permite reproducir voz.";
+ return;
+ }
+ speechSynthesis.cancel();
+ const u=new SpeechSynthesisUtterance(texto);
+ u.lang="es-ES";
+ const voces=speechSynthesis.getVoices();
+ const es=voces.filter(v=>v.lang.toLowerCase().startsWith("es"));
+ const preferida=document.getElementById("voz").value;
+ if(es.length){
+  let elegida=es[0];
+  const palabrasF= /female|woman|mujer|monica|paulina/i;
+  const palabrasM= /male|man|hombre|jorge|diego/i;
+  const buscada=preferida==="female"?palabrasF:palabrasM;
+  elegida=es.find(v=>buscada.test(v.name))||es[0];
+  u.voice=elegida;
+ }
+ u.rate=1;
+ u.pitch=preferida==="female"?1.15:0.9;
+ speechSynthesis.speak(u);
+}
+
+function enviar(){
+ const texto=mensaje.value.trim();
+ if(!texto)return;
+ agregar(texto,"user");
+ mensaje.value="";
+ const respuestaTexto=responder(texto);
+ agregar(respuestaTexto,"bot");
+ hablar(respuestaTexto);
+}
+
+function respuesta(texto){
+ mensaje.value=texto;
+ enviar();
+}
+
+function detenerVoz(){
+ if("speechSynthesis" in window)speechSynthesis.cancel();
+}
+
+function escuchar(){
+ const Reconocimiento=window.SpeechRecognition||window.webkitSpeechRecognition;
+ if(!Reconocimiento){
+  estado.textContent="El micrófono no está disponible en este navegador. Prueba Chrome.";
+  return;
+ }
+ const reconocimiento=new Reconocimiento();
+ reconocimiento.lang="es-ES";
+ reconocimiento.interimResults=false;
+ estado.textContent="🎤 Te estoy escuchando...";
+ reconocimiento.onresult=function(event){
+  const texto=event.results[0][0].transcript;
+  mensaje.value=texto;
+  estado.textContent="He reconocido tu mensaje.";
+  enviar();
+ };
+ reconocimiento.onerror=function(){
+  estado.textContent="No pude escucharte. Revisa el permiso del micrófono.";
+ };
+ reconocimiento.onend=function(){
+  if(estado.textContent.includes("escuchando"))
+  estado.textContent="Estoy lista para escucharte.";
+ };
+ reconocimiento.start();
+}
+
+function guardarVoz(){
+ detenerVoz();
+}
+mensaje.addEventListener("keydown",function(e){
+ if(e.key==="Enter")enviar();
 });
-
-function quick(text){
- input.value=text;
- document.getElementById("chatForm").requestSubmit();
-}
 </script>
 </body>
 </html>
