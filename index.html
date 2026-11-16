@@ -171,7 +171,7 @@ function hablar(texto){
   elegida=es.find(v=>buscada.test(v.name))||es[0];
   u.voice=elegida;
  }
- u.rate=1;
+ u.rate=0.85;
  u.pitch=preferida==="female"?1.15:0.9;
  speechSynthesis.speak(u);
 }
